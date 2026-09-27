@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài Thuyết Trình Công Nghệ Điện – Quang | Nhóm 3</title>
+<meta name="description" content="Bài thuyết trình tương tác: Công nghệ điện – quang — Từ dòng điện đến ánh sáng. Nhóm 3.">
+
+<!-- Fonts: Montserrat (tiêu đề) + Be Vietnam Pro (nội dung tiếng Việt) + JetBrains Mono (số liệu) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- Icon: Font Awesome 6 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript><p style="padding:20px;color:#fff">Vui lòng bật JavaScript để trình chiếu.</p></noscript>
+
+<!-- ═══════════════ HUD: nhãn góc trên + nút menu ═══════════════ -->
+<div class="brand" aria-hidden="true"><span class="loop brand-dot"></span>CÔNG NGHỆ ĐIỆN – QUANG</div>
+<button class="menu-btn" id="btnMenu" aria-label="Mở mục lục" title="Mục lục (M)"><i class="fa-solid fa-bars"></i></button>
+
+<!-- ═══════════════ THANH ĐIỀU HƯỚNG DƯỚI ═══════════════ -->
+<div class="hud">
+  <button class="hud-btn" id="btnPrev" aria-label="Slide trước"><i class="fa-solid fa-arrow-left"></i><span>Prev</span></button>
+  <div class="hud-counter" aria-live="polite"><span id="curLabel">SLIDE 01</span><span class="sep">/</span><span id="totalLabel">17</span></div>
+  <button class="hud-btn primary" id="btnNext" aria-label="Slide kế tiếp"><span>Next</span><i class="fa-solid fa-arrow-right"></i></button>
+  <span class="hud-gap"></span>
+  <button class="hud-btn" id="btnFs" aria-label="Bật/tắt toàn màn hình" title="Toàn màn hình (F)"><i class="fa-solid fa-expand"></i><span>Toàn màn hình</span></button>
+</div>
+
+<!-- Thanh tiến trình (photon chạy ở đầu thanh) -->
+<div class="progress" role="progressbar" aria-label="Tiến trình bài thuyết trình" aria-valuemin="1" aria-valuemax="17" aria-valuenow="1" id="pBar"><div class="progress-fill" id="pFill"></div></div>
+
+<!-- Toast gợi ý phím tắt -->
+<div class="hint" id="hint" role="status"><i class="fa-solid fa-keyboard"></i> ← → chuyển slide · SPACE: tiếp theo · F: toàn màn hình · M: mục lục</div>
+
+<!-- ═══════════════ MENU MỤC LỤC ═══════════════ -->
+<aside class="menu" id="menu" aria-hidden="true" aria-label="Mục lục slide">
+  <div class="menu-head">
+    <span><i class="fa-solid fa-list-ul"></i> MỤC LỤC</span>
+    <button id="menuClose" aria-label="Đóng mục lục"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <ol class="menu-list" id="menuList"></ol>
+  <div class="menu-foot">
+    <button class="menu-action" id="menuFs"><i class="fa-solid fa-expand"></i> Toàn màn hình</button>
+    <button class="menu-action" id="menuAnim"><i class="fa-solid fa-sliders"></i> Animation: <b id="animState">BẬT</b></button>
+    <button class="menu-action" id="menuHome"><i class="fa-solid fa-house"></i> Về slide đầu (Home)</button>
+  </div>
+</aside>
+<div class="menu-scrim" id="menuScrim"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     DECK — 17 SLIDE (16:9, 1 slide = 1 viewport)
+══════════════════════════════════════════════════════════ -->
+<main class="deck">
+
+<!-- ─────────── SLIDE 1 · TRANG BÌA ─────────── -->
+<section class="slide s-cover active" data-title="Trang bìa">
+  <p class="cover-eyebrow anim" style="--d:0">NHÓM 3 · BÀI THUYẾT TRÌNH CÔNG NGHỆ ĐIỆN – QUANG</p>
+  <p class="cover-question anim" style="--d:1">“Hằng ngày, chúng ta bật công tắc và bóng đèn sáng lên — nhưng <em class="c-cyan">công nghệ nào</em> ở bên trong đã biến <em class="c-cyan">dòng điện</em> thành <em class="c-gold">ánh sáng</em>?”</p>
+
+  <div class="bulb-scene anim" style="--d:2">
+    <svg viewBox="0 0 720 240" aria-hidden="true" focusable="false">
+      <defs>
+        <!-- Quầng sáng ấm áp nhiều tầng tỏa ra từ tim đèn -->
+        <radialGradient id="glowCore" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+          <stop offset="25%" stop-color="#FFE885" stop-opacity="0.75"/>
+          <stop offset="55%" stop-color="#FFB300" stop-opacity="0.35"/>
+          <stop offset="80%" stop-color="#FF8F00" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#FF8F00" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFAE19" stop-opacity="0.35"/>
+          <stop offset="60%" stop-color="#FF7700" stop-opacity="0.09"/>
+          <stop offset="100%" stop-color="#FF7700" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Hiệu ứng kim loại cho các rãnh đui xoáy E27 -->
+        <linearGradient id="screwMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#41566E"/>
+          <stop offset="28%" stop-color="#8FA8C4"/>
+          <stop offset="50%" stop-color="#B8D0E8"/>
+          <stop offset="72%" stop-color="#6B829C"/>
+          <stop offset="100%" stop-color="#2D3E52"/>
+        </linearGradient>
+        <!-- Độ trong suốt và ánh xanh thủy tinh cao cấp -->
+        <linearGradient id="glassGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+          <stop offset="40%" stop-color="#64B5F6" stop-opacity="0.04"/>
+          <stop offset="80%" stop-color="#0D47A1" stop-opacity="0.12"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Dây dẫn điện 2 bên -->
+      <path class="wire" d="M0 186 H346"/>
+      <path class="wire" d="M374 186 H720"/>
+
+      <!-- Hạt electron phát sáng chạy trên dây điện -->
+      <g>
+        <circle class="loop spark s1" cx="12" cy="186" r="4"/><circle class="loop spark s2" cx="12" cy="186" r="4"/><circle class="loop spark s3" cx="12" cy="186" r="4"/>
+        <circle class="loop spark sR s1" cx="708" cy="186" r="4"/><circle class="loop spark sR s2" cx="708" cy="186" r="4"/><circle class="loop spark sR s3" cx="708" cy="186" r="4"/>
+      </g>
+
+      <!-- Quầng sáng phát quang đa tầng quanh bóng -->
+      <circle class="loop glow" cx="360" cy="80" r="115" fill="url(#glowAura)"/>
+      <circle class="loop glow" cx="360" cy="80" r="68" fill="url(#glowCore)"/>
+
+      <!-- Các tia sáng tỏa ra nghệ thuật (tinh tế, thanh thoát) -->
+      <g class="rays" stroke="#FFC95C" stroke-width="2.5" stroke-linecap="round">
+        <line class="loop ray" x1="360" y1="2" x2="360" y2="18" transform="rotate(-65 360 80)"/>
+        <line class="loop ray" x1="360" y1="2" x2="360" y2="22" transform="rotate(-40 360 80)"/>
+        <line class="loop ray" x1="360" y1="0" x2="360" y2="24" transform="rotate(-15 360 80)"/>
+        <line class="loop ray" x1="360" y1="0" x2="360" y2="24" transform="rotate(15 360 80)"/>
+        <line class="loop ray" x1="360" y1="2" x2="360" y2="22" transform="rotate(40 360 80)"/>
+        <line class="loop ray" x1="360" y1="2" x2="360" y2="18" transform="rotate(65 360 80)"/>
+      </g>
+
+      <!-- Vỏ bóng thủy tinh dáng quả lê A60 mượt mà chuẩn 2D -->
+      <path d="M 338 142 C 334 120, 314 98, 314 74 A 46 46 0 1 1 406 74 C 406 98, 386 120, 382 142 Z"
+            fill="url(#glassGrad)"
+            stroke="rgba(190, 228, 255, 0.45)"
+            stroke-width="2.5"
+            stroke-linejoin="round"/>
+
+      <!-- Vệt sáng phản quang trên mặt kính (Specular Highlights) -->
+      <path d="M 328 50 A 38 38 0 0 1 364 34" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+      <circle cx="323" cy="62" r="1.5" fill="#FFFFFF" opacity="0.5"/>
+
+      <!-- Trụ thủy tinh chân đèn (Stem mount) -->
+      <path d="M 348 142 L 352 112 Q 360 110 368 112 L 372 142 Z"
+            fill="rgba(120, 180, 240, 0.12)"
+            stroke="rgba(180, 220, 255, 0.3)"
+            stroke-width="1.5"/>
+
+      <!-- Dây dẫn cực kim loại đỡ dây tóc -->
+      <path d="M 353 112 L 353 84" stroke="#B0CCE8" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M 367 112 L 367 84" stroke="#B0CCE8" stroke-width="1.8" stroke-linecap="round"/>
+
+      <!-- Dây tóc Vonfram uốn lượn phát sáng rực rỡ -->
+      <path class="fil"
+            d="M 353 84 Q 355 74 358 72 Q 360 70 360 62 Q 360 70 362 72 Q 365 74 367 84"
+            fill="none"
+            stroke="#FFF8E0"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+
+      <!-- Điểm phát sáng rực rỡ tại tâm tim đèn -->
+      <circle cx="360" cy="74" r="5" fill="#FFFFFF" opacity="0.95" filter="drop-shadow(0 0 6px #FFAA00)"/>
+
+      <!-- Các vòng ren xoắn đui kim loại E27 -->
+      <rect x="341" y="142" width="38" height="6.5" rx="3" fill="url(#screwMetal)" stroke="rgba(180,210,240,0.3)" stroke-width="1"/>
+      <rect x="342" y="149" width="36" height="6.5" rx="3" fill="url(#screwMetal)" stroke="rgba(180,210,240,0.3)" stroke-width="1"/>
+      <rect x="343" y="156" width="34" height="6.5" rx="3" fill="url(#screwMetal)" stroke="rgba(180,210,240,0.3)" stroke-width="1"/>
+      <rect x="345" y="163" width="30" height="6.5" rx="3" fill="url(#screwMetal)" stroke="rgba(180,210,240,0.3)" stroke-width="1"/>
+
+      <!-- Vòng đệm cách điện đen -->
+      <path d="M 348 170 Q 360 174 372 170 L 370 176 Q 360 180 350 176 Z" fill="#0C1724" stroke="rgba(180,210,240,0.2)" stroke-width="1"/>
+
+      <!-- Cực tiếp xúc kim loại đáy bóng đèn kết nối mạch điện -->
+      <path d="M 352 176 Q 360 187 368 176 Z" fill="#FFC95C" stroke="#FFE29E" stroke-width="1.2"/>
+    </svg>
+  </div>
+
+  <h1 class="cover-title anim" style="--d:3">CÔNG NGHỆ<br>ĐIỆN – QUANG</h1>
+  <p class="cover-sub anim" style="--d:4">Từ dòng điện đến ánh sáng — nguyên lý, ứng dụng và tương lai</p>
+  <span class="cover-team anim" style="--d:5">NHÓM 3</span>
+</section>
+
+<!-- ─────────── SLIDE 2 · NỘI DUNG CHÍNH ─────────── -->
+<section class="slide s-agenda" data-title="Nội dung chính">
+  <div class="agenda-left anim" style="--d:0">
+    <p class="kicker">MỤC LỤC</p>
+    <h2 class="slide-title">NỘI DUNG<br>CHÍNH</h2>
+    <div class="rule"></div>
+    <p class="agenda-note">6 phần — đi từ nguyên lý vật lý đến những xu hướng của tương lai.</p>
+  </div>
+  <ol class="agenda-list">
+    <li class="anim" style="--d:1"><span class="num">01</span><span class="ag-ic"><i class="fa-solid fa-lightbulb"></i></span><div><strong>Khái niệm về công nghệ điện – quang</strong><small>Định nghĩa · vai trò trong đời sống</small></div></li>
+    <li class="anim" style="--d:2"><span class="num">02</span><span class="ag-ic"><i class="fa-solid fa-microchip"></i></span><div><strong>Phân loại, nguyên lý &amp; sản xuất</strong><small>Sợi đốt · Huỳnh quang · LED · Sản xuất đèn huỳnh quang</small></div></li>
+    <li class="anim" style="--d:3"><span class="num">03</span><span class="ag-ic"><i class="fa-solid fa-chart-column"></i></span><div><strong>Ưu / nhược điểm các loại phổ biến</strong><small>So sánh định lượng 3 công nghệ</small></div></li>
+    <li class="anim" style="--d:4"><span class="num">04</span><span class="ag-ic"><i class="fa-solid fa-seedling"></i></span><div><strong>Ứng dụng trong thực tiễn</strong><small>Gia đình · Nông nghiệp · Y tế</small></div></li>
+    <li class="anim" style="--d:5"><span class="num">05</span><span class="ag-ic"><i class="fa-solid fa-robot"></i></span><div><strong>Xu hướng phát triển</strong><small>Chuyển dịch sang LED · Chiếu sáng thông minh</small></div></li>
+    <li class="anim" style="--d:6"><span class="num">06</span><span class="ag-ic"><i class="fa-solid fa-flag-checkered"></i></span><div><strong>Kết luận</strong><small>Tổng kết &amp; tầm nhìn tương lai</small></div></li>
+  </ol>
+</section>
+
+<!-- ─────────── SLIDE 3 · KHÁI NIỆM ─────────── -->
+<section class="slide s-concept" data-title="Khái niệm">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 01 · KHÁI NIỆM</p>
+    <h2 class="slide-title">KHÁI NIỆM CÔNG NGHỆ ĐIỆN – QUANG</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="concept-body">
+    <div class="concept-text">
+      <p class="concept-def anim" style="--d:1">“Lĩnh vực kỹ thuật ứng dụng điện để chuyển hóa <em class="c-cyan">điện năng</em> thành <em class="c-gold">quang năng — ánh sáng</em>, phục vụ chiếu sáng, trang trí và hiển thị thông tin.”</p>
+      <ul class="role-list">
+        <li class="anim" style="--d:2"><i class="fa-solid fa-house"></i>Sinh hoạt &amp; học tập</li>
+        <li class="anim" style="--d:3"><i class="fa-solid fa-industry"></i>Sản xuất công nghiệp</li>
+        <li class="anim" style="--d:4"><i class="fa-solid fa-seedling"></i>Nông nghiệp</li>
+        <li class="anim" style="--d:5"><i class="fa-solid fa-flask"></i>Nghiên cứu khoa học</li>
+      </ul>
+    </div>
+    <ol class="steps steps-lg">
+      <li class="anim" style="--d:2"><span class="st-ic"><i class="fa-solid fa-plug"></i></span><span class="st-tx"><strong>ĐIỆN NĂNG</strong><small>từ lưới điện</small></span></li>
+      <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i><i class="loop dot d3"></i></li>
+      <li class="anim hl" style="--d:3"><span class="st-ic"><i class="fa-solid fa-atom"></i></span><span class="st-tx"><strong>CÔNG NGHỆ ĐIỆN – QUANG</strong><small>bước chuyển hóa năng lượng</small></span></li>
+      <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i><i class="loop dot d3"></i></li>
+      <li class="anim" style="--d:4"><span class="st-ic gold"><i class="fa-solid fa-sun"></i></span><span class="st-tx"><strong>QUANG NĂNG / ÁNH SÁNG</strong></span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 4 · 3 CÔNG NGHỆ PHỔ BIẾN ─────────── -->
+<section class="slide s-types" data-title="3 công nghệ phổ biến">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 02 · PHÂN LOẠI &amp; NGUYÊN LÝ</p>
+    <h2 class="slide-title">3 CÔNG NGHỆ CHIẾU SÁNG PHỔ BIẾN</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="type-cards">
+    <article class="type-card anim" style="--d:1">
+      <span class="type-no">01</span>
+      <figure class="ph" data-img="incandescent" data-alt="Ảnh đèn sợi đốt">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide4-incandescent.jpg</small></span>
+      </figure>
+      <h3>ĐÈN SỢI ĐỐT</h3>
+      <p>Nung nóng dây tóc vonfram để phát sáng.</p>
+    </article>
+    <article class="type-card anim" style="--d:2">
+      <span class="type-no">02</span>
+      <figure class="ph" data-img="fluorescent" data-alt="Ảnh đèn huỳnh quang">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide4-fluorescent.jpg</small></span>
+      </figure>
+      <h3>ĐÈN HUỲNH QUANG</h3>
+      <p>Phóng điện qua hơi thủy ngân, kích bột huỳnh quang.</p>
+    </article>
+    <article class="type-card anim" style="--d:3">
+      <span class="type-no">03</span>
+      <figure class="ph" data-img="led" data-alt="Ảnh đèn LED">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide4-led.jpg</small></span>
+      </figure>
+      <h3>ĐÈN LED</h3>
+      <p>Bán dẫn tái hợp điện tử – lỗ trống, phát ra photon.</p>
+    </article>
+  </div>
+  <p class="types-foot anim" style="--d:4">Ba công nghệ khác nhau ở <em class="c-cyan">cách chúng tạo ra ánh sáng</em>.</p>
+</section>
+
+<!-- ─────────── SLIDE 5 · NGUYÊN LÝ ĐÈN SỢI ĐỐT ─────────── -->
+<section class="slide s-incan" data-title="Nguyên lý · Đèn sợi đốt">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 02 · NGUYÊN LÝ HOẠT ĐỘNG</p>
+    <h2 class="slide-title"><span class="tno">01</span> ĐÈN SỢI ĐỐT</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="duo-body">
+    <div class="duo-left">
+      <ol class="steps">
+        <li class="anim" style="--d:1"><span class="st-ic"><i class="fa-solid fa-plug"></i></span><span class="st-tx"><strong>ĐIỆN NĂNG</strong></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:2"><span class="st-ic"><i class="fa-solid fa-bolt"></i></span><span class="st-tx"><strong>DÒNG ĐIỆN QUA DÂY TÓC</strong><small>vonfram, điện trở lớn</small></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:3"><span class="st-ic"><i class="fa-solid fa-fire"></i></span><span class="st-tx"><strong>NHIỆT NĂNG</strong><small>nung nóng ~2.500–3.000°C</small></span></li>
+        <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim hl" style="--d:4"><span class="st-ic gold"><i class="fa-solid fa-sun"></i></span><span class="st-tx"><strong>QUANG NĂNG</strong><small>dây tóc phát sáng</small></span></li>
+      </ol>
+      <ul class="blist">
+        <li class="anim" style="--d:5">Dây tóc vonfram được nung nóng khi có dòng điện chạy qua.</li>
+        <li class="anim" style="--d:6">Khi đạt nhiệt độ rất cao, dây tóc phát sáng.</li>
+        <li class="anim" style="--d:7">Điện năng → nhiệt năng → quang năng.</li>
+      </ul>
+    </div>
+    <div class="duo-right">
+      <div class="eff anim" style="--d:2">
+        <p class="eff-label">CHỈ <strong>~5%</strong> NĂNG LƯỢNG TRỞ THÀNH ÁNH SÁNG</p>
+        <div class="eff-bar"><i style="--w:5%"></i></div>
+        <div class="eff-scale"><span>5% ánh sáng</span><span>95% tỏa nhiệt</span></div>
+      </div>
+      <figure class="ph anim" style="--d:3" data-img="incandescentPrinciple" data-alt="Ảnh sơ đồ cắt lớp đèn sợi đốt">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide5-incandescent-principle.jpg</small></span>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 6 · NGUYÊN LÝ ĐÈN HUỲNH QUANG ─────────── -->
+<section class="slide s-fluor" data-title="Nguyên lý · Đèn huỳnh quang">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 02 · NGUYÊN LÝ HOẠT ĐỘNG</p>
+    <h2 class="slide-title"><span class="tno">02</span> ĐÈN HUỲNH QUANG</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="duo-body">
+    <div class="duo-left">
+      <ol class="steps">
+        <li class="anim" style="--d:1"><span class="st-ic"><i class="fa-solid fa-bolt"></i></span><span class="st-tx"><strong>PHÓNG ĐIỆN</strong><small>giữa hai điện cực</small></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:2"><span class="st-ic"><i class="fa-solid fa-atom"></i></span><span class="st-tx"><strong>HƠI THỦY NGÂN</strong><small>bị kích thích</small></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot uv"></i><i class="loop dot uv d2"></i></li>
+        <li class="anim" style="--d:3"><span class="st-ic uv"><i class="fa-solid fa-wave-square"></i></span><span class="st-tx"><strong>TIA CỰC TIM (UV)</strong></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:4"><span class="st-ic"><i class="fa-solid fa-vial"></i></span><span class="st-tx"><strong>BỘT HUỲNH QUANG</strong><small>lớp phosphor trong ống</small></span></li>
+        <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim hl" style="--d:5"><span class="st-ic gold"><i class="fa-solid fa-sun"></i></span><span class="st-tx"><strong>ÁNH SÁNG NHÌN THẤY</strong></span></li>
+      </ol>
+    </div>
+    <div class="duo-right">
+      <div class="tube-fig anim" style="--d:2">
+        <svg viewBox="0 0 640 240" aria-hidden="true" focusable="false">
+          <!-- ống thủy tinh -->
+          <rect x="28" y="92" width="584" height="64" rx="32" fill="#0D1E33" stroke="rgba(190,225,255,.35)" stroke-width="2"/>
+          <!-- lớp bột huỳnh quang (phosphor) -->
+          <rect x="52" y="99" width="536" height="7" rx="3" fill="#A88BFF" opacity=".22"/>
+          <rect x="52" y="142" width="536" height="7" rx="3" fill="#A88BFF" opacity=".22"/>
+          <!-- điện cực hai đầu -->
+          <rect x="42" y="104" width="9" height="40" rx="2" fill="#3CE0FF" opacity=".85"/>
+          <rect x="589" y="104" width="9" height="40" rx="2" fill="#3CE0FF" opacity=".85"/>
+          <!-- phóng điện giữa hai điện cực -->
+          <rect x="52" y="112" width="536" height="24" rx="12" fill="rgba(60,224,255,.12)"/>
+          <!-- vùng phát UV ở giữa -->
+          <g stroke="#A88BFF" stroke-width="2.5" stroke-linecap="round">
+            <g class="loop uv u1"><path d="M306 114 l8 8 M314 114 l-8 8"/></g>
+            <g class="loop uv u2"><path d="M326 126 l8 8 M334 126 l-8 8"/></g>
+            <g class="loop uv u3"><path d="M308 136 l8 8 M316 136 l-8 8"/></g>
+          </g>
+          <rect class="loop phGlow" x="288" y="97" width="64" height="54" rx="10" fill="rgba(255,244,214,.22)"/>
+          <!-- ánh sáng tỏa ra -->
+          <g stroke="#FFE9B0" stroke-width="3" stroke-linecap="round" opacity=".6">
+            <line class="loop ray" x1="120" y1="88" x2="120" y2="58"/><line class="loop ray" x1="220" y1="88" x2="220" y2="52"/>
+            <line class="loop ray" x1="320" y1="88" x2="320" y2="46"/><line class="loop ray" x1="420" y1="88" x2="420" y2="52"/>
+            <line class="loop ray" x1="520" y1="88" x2="520" y2="58"/>
+            <line class="loop ray" x1="170" y1="160" x2="170" y2="190"/><line class="loop ray" x1="320" y1="160" x2="320" y2="198"/>
+            <line class="loop ray" x1="470" y1="160" x2="470" y2="190"/>
+          </g>
+        </svg>
+        <p class="fig-cap">Ống thủy tinh · hơi thủy ngân + khí trơ · lớp bột huỳnh quang (phosphor)</p>
+      </div>
+      <figure class="ph ph-wide anim" style="--d:4" data-img="fluorescentPrinciple" data-alt="Ảnh thực tế các loại bóng đèn huỳnh quang ống thẳng T5, T8 và compact">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide6-fluorescent-principle.jpg</small></span>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 7 · NGUYÊN LÝ ĐÈN LED (slide trọng tâm) ─────────── -->
+<section class="slide s-led" data-title="Nguyên lý · Đèn LED">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 02 · NGUYÊN LÝ HOẠT ĐỘNG — CÔNG NGHỆ HIỆN ĐẠI NHẤT</p>
+    <h2 class="slide-title"><span class="tno">03</span> ĐÈN LED</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="led-body">
+    <div class="led-left">
+      <ol class="steps">
+        <li class="anim" style="--d:1"><span class="st-ic"><i class="fa-solid fa-exchange-alt"></i></span><span class="st-tx"><strong>ELECTRON + LỖ TRỐNG</strong><small>dòng một chiều qua tiếp giáp</small></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:2"><span class="st-ic"><i class="fa-solid fa-compress"></i></span><span class="st-tx"><strong>TÁI HỢP</strong><small>tại vùng tích cực</small></span></li>
+        <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:3"><span class="st-ic gold"><i class="fa-solid fa-bolt"></i></span><span class="st-tx"><strong>PHOTON</strong><small>năng lượng giải phóng</small></span></li>
+        <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim hl" style="--d:4"><span class="st-ic gold"><i class="fa-solid fa-sun"></i></span><span class="st-tx"><strong>ÁNH SÁNG</strong><small>điện phát quang</small></span></li>
+      </ol>
+      <ul class="blist compact">
+        <li class="anim" style="--d:5">LED sử dụng cấu trúc bán dẫn <b>P–N</b>.</li>
+        <li class="anim" style="--d:6">Dòng điện một chiều → electron &amp; lỗ trống tái hợp.</li>
+        <li class="anim" style="--d:7">Năng lượng giải phóng dưới dạng <b class="c-gold">photon</b>.</li>
+        <li class="anim" style="--d:8">Hiệu suất cao · tiết kiệm điện · tuổi thọ lớn.</li>
+      </ul>
+    </div>
+    <div class="led-right">
+      <div class="jfig anim" style="--d:2">
+        <svg viewBox="0 0 640 300" role="img" aria-label="Mô phỏng tiếp giáp P–N: electron và lỗ trống tái hợp, phát photon">
+          <text x="124" y="106" text-anchor="middle" class="sv-lb">P-TYPE</text>
+          <text x="320" y="104" text-anchor="middle" class="sv-lb c-cyan">P–N JUNCTION</text>
+          <text x="516" y="106" text-anchor="middle" class="sv-lb">N-TYPE</text>
+          <text x="320" y="30" text-anchor="middle" class="sv-lb gold">ÁNH SÁNG</text>
+          <text x="18" y="188" class="sv-el">+</text><text x="618" y="190" class="sv-el">−</text>
+
+          <rect x="24"  y="128" width="200" height="104" rx="10" fill="#10233C" stroke="rgba(120,180,220,.28)"/>
+          <rect x="416" y="128" width="200" height="104" rx="10" fill="#10233C" stroke="rgba(120,180,220,.28)"/>
+          <rect x="232" y="120" width="176" height="120" rx="12" fill="rgba(60,224,255,.07)" stroke="rgba(60,224,255,.6)" stroke-width="1.5" class="j-zone"/>
+
+          <!-- lỗ trống tĩnh (P) -->
+          <g fill="none" stroke="#F1F7FD" stroke-width="1.8" opacity=".6">
+            <circle cx="56" cy="150" r="6"/><circle cx="100" cy="180" r="6"/><circle cx="150" cy="152" r="6"/><circle cx="190" cy="196" r="6"/>
+            <circle cx="70" cy="212" r="6"/><circle cx="140" cy="212" r="6"/><circle cx="196" cy="146" r="6"/>
+          </g>
+          <!-- electron tĩnh (N) -->
+          <g fill="#3CE0FF" opacity=".55">
+            <circle cx="446" cy="152" r="5"/><circle cx="500" cy="180" r="5"/><circle cx="548" cy="150" r="5"/><circle cx="590" cy="196" r="5"/>
+            <circle cx="460" cy="212" r="5"/><circle cx="530" cy="214" r="5"/><circle cx="588" cy="148" r="5"/>
+          </g>
+
+          <!-- cặp tải điện động: A / B / C (lệch pha 1.33s) -->
+          <circle class="loop j-e" cx="560" cy="150" r="6" fill="#3CE0FF"/>
+          <circle class="loop j-h" cx="80"  cy="150" r="6" fill="none" stroke="#F1F7FD" stroke-width="2"/>
+          <circle class="loop j-flash" cx="320" cy="150" r="10" fill="none" stroke="#FFC95C" stroke-width="3"/>
+          <g class="loop j-ph"><circle cx="320" cy="150" r="5" fill="#FFC95C"/><line x1="320" y1="158" x2="320" y2="170" stroke="#FFC95C" stroke-width="2" opacity=".5"/></g>
+
+          <circle class="loop j-e" style="animation-delay:1.33s" cx="560" cy="182" r="6" fill="#3CE0FF"/>
+          <circle class="loop j-h" style="animation-delay:1.33s" cx="80"  cy="182" r="6" fill="none" stroke="#F1F7FD" stroke-width="2"/>
+          <circle class="loop j-flash" style="animation-delay:1.33s" cx="320" cy="182" r="10" fill="none" stroke="#FFC95C" stroke-width="3"/>
+          <g class="loop j-ph" style="animation-delay:1.33s"><circle cx="320" cy="182" r="5" fill="#FFC95C"/><line x1="320" y1="190" x2="320" y2="202" stroke="#FFC95C" stroke-width="2" opacity=".5"/></g>
+
+          <circle class="loop j-e" style="animation-delay:2.67s" cx="560" cy="214" r="6" fill="#3CE0FF"/>
+          <circle class="loop j-h" style="animation-delay:2.67s" cx="80"  cy="214" r="6" fill="none" stroke="#F1F7FD" stroke-width="2"/>
+          <circle class="loop j-flash" style="animation-delay:2.67s" cx="320" cy="214" r="10" fill="none" stroke="#FFC95C" stroke-width="3"/>
+          <g class="loop j-ph" style="animation-delay:2.67s"><circle cx="320" cy="214" r="5" fill="#FFC95C"/><line x1="320" y1="222" x2="320" y2="234" stroke="#FFC95C" stroke-width="2" opacity=".5"/></g>
+        </svg>
+      </div>
+      <figure class="ph ph-led anim" style="--d:4" data-img="ledPrinciple" data-alt="Ảnh cấu tạo chip đèn LED">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide7-led-principle.jpg</small></span>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 8 · QUY TRÌNH & VIDEO SẢN XUẤT ĐÈN HUỲNH QUANG ─────────── -->
+<section class="slide s-prod" data-title="Sản xuất đèn huỳnh quang">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 02 · QUY TRÌNH CÔNG NGHỆ</p>
+    <h2 class="slide-title">QUÁ TRÌNH SẢN XUẤT ĐÈN HUỲNH QUANG</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="prod-body">
+    <div class="prod-left">
+      <div class="proc-pipeline">
+        <div class="proc-item anim" style="--d:1">
+          <span class="proc-badge">01</span>
+          <div class="proc-content">
+            <div class="proc-head">
+              <span class="proc-ic"><i class="fa-solid fa-spray-can-sparkles"></i></span>
+              <div>
+                <strong>TRÁNG BỘT HUỲNH QUANG</strong>
+                <small>Ống thủy tinh &amp; Lò sấy nhiệt</small>
+              </div>
+            </div>
+            <p>Làm sạch ống thủy tinh, tráng phủ đều lớp bột huỳnh quang chuyên dụng lên thành trong của ống và sấy khô bằng nhiệt độ cao.</p>
+          </div>
+        </div>
+
+        <div class="proc-link" aria-hidden="true"><i class="loop dot"></i></div>
+
+        <div class="proc-item anim" style="--d:2">
+          <span class="proc-badge">02</span>
+          <div class="proc-content">
+            <div class="proc-head">
+              <span class="proc-ic"><i class="fa-solid fa-bolt"></i></span>
+              <div>
+                <strong>HÀN CỤM ĐIỆN CỰC (ĐẦU ĐÈN)</strong>
+                <small>Dây tóc vonfram &amp; Chất phát xạ điện tử</small>
+              </div>
+            </div>
+            <p>Quấn dây tóc vonfram phủ hoạt chất phát xạ (BaO/SrO), hàn kín chắc chắn chân điện cực vào hai đầu ống bằng ngọn lửa khí.</p>
+          </div>
+        </div>
+
+        <div class="proc-link" aria-hidden="true"><i class="loop dot"></i></div>
+
+        <div class="proc-item anim" style="--d:3">
+          <span class="proc-badge">03</span>
+          <div class="proc-content">
+            <div class="proc-head">
+              <span class="proc-ic"><i class="fa-solid fa-wind"></i></span>
+              <div>
+                <strong>HÚT CHÂN KHÔNG &amp; NẠP KHÍ TRƠ, THỦY NGÂN</strong>
+                <small>Rút kiệt khí &amp; Nạp khí Argon + Hg</small>
+              </div>
+            </div>
+            <p>Rút chân không áp suất thấp, nạp một lượng nhỏ khí trơ Argon cùng giọt thủy ngân vi lượng, sau đó hàn kín ống thoát khí.</p>
+          </div>
+        </div>
+
+        <div class="proc-link" aria-hidden="true"><i class="loop dot"></i></div>
+
+        <div class="proc-item anim hl" style="--d:4">
+          <span class="proc-badge">04</span>
+          <div class="proc-content">
+            <div class="proc-head">
+              <span class="proc-ic gold"><i class="fa-solid fa-clipboard-check"></i></span>
+              <div>
+                <strong>LẮP ĐUI ĐÈN &amp; LUYỆN ĐÈN (QC)</strong>
+                <small>Lắp đui cực &amp; Kiểm định lão hóa</small>
+              </div>
+            </div>
+            <p>Lắp hai đầu đui tiếp điện kim loại, chạy thử luyện đèn ở điện áp thấp 180V và kiểm định chất lượng quang thông theo chuẩn TCVN.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod-right anim" style="--d:2">
+      <div class="prod-media-toolbar">
+        <div class="prod-media-tabs">
+          <button type="button" class="prod-tab-btn active" id="tabVideo" data-target="mediaVideo">
+            <i class="fa-solid fa-play"></i> Video thực tế
+          </button>
+          <button type="button" class="prod-tab-btn" id="tabPhoto" data-target="mediaPhoto">
+            <i class="fa-regular fa-image"></i> Ảnh dây chuyền
+          </button>
+        </div>
+        <div class="prod-media-actions">
+          <a href="https://www.youtube.com/watch?v=GnAk91vzr9g" target="_blank" rel="noopener noreferrer" class="prod-fs-btn btn-yt" title="Mở video trên YouTube">
+            <i class="fa-brands fa-youtube"></i> YouTube
+          </a>
+          <button type="button" class="prod-fs-btn" id="btnVideoFs" title="Phóng to toàn màn hình">
+            <i class="fa-solid fa-expand"></i> Phóng to video
+          </button>
+        </div>
+      </div>
+
+      <div class="prod-media-box">
+        <!-- Panel 1: Video quy trình sản xuất (Nhúng YouTube từ link trực tuyến) -->
+        <div class="prod-media-panel active" id="mediaVideo">
+          <div class="video-frame" id="videoFrame">
+            <iframe id="mainIframe"
+                    src="https://www.youtube-nocookie.com/embed/GnAk91vzr9g?enablejsapi=1&amp;rel=0"
+                    title="Quy trình sản xuất đèn huỳnh quang - Điện Quang"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <!-- Panel 2: Ảnh minh họa dây chuyền công nghệ -->
+        <div class="prod-media-panel" id="mediaPhoto">
+          <figure class="ph ph-hero" data-img="production" data-alt="Dây chuyền công nghệ sản xuất đèn huỳnh quang">
+            <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide9-production.jpg</small></span>
+          </figure>
+        </div>
+      </div>
+
+      <div class="prod-highlights anim" style="--d:4">
+        <div class="prod-hl-item">
+          <i class="fa-solid fa-layer-group"></i>
+          <div><strong>Kiểm soát độ dày bột huỳnh quang</strong><small>Lớp phủ đồng đều, không bong tróc, tối ưu quang thông</small></div>
+        </div>
+        <div class="prod-hl-item">
+          <i class="fa-solid fa-gauge-high"></i>
+          <div><strong>Độ kín chân không &amp; Thử nghiệm 180V</strong><small>Định lượng thủy ngân an toàn &amp; kiểm định theo TCVN</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 9 · SO SÁNH ƯU / NHƯỢC ĐIỂM ─────────── -->
+<section class="slide s-cmp" data-title="So sánh ưu / nhược">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 03 · ĐÁNH GIÁ KỸ THUẬT</p>
+    <h2 class="slide-title">SO SÁNH ƯU / NHƯỢC ĐIỂM</h2>
+    <div class="rule"></div>
+  </div>
+  <table class="cmp-table">
+    <thead><tr><th>Công nghệ</th><th>Ưu điểm</th><th>Nhược điểm</th></tr></thead>
+    <tbody>
+      <tr class="anim" style="--d:1">
+        <td><span class="td-name"><i class="fa-solid fa-fire"></i>Sợi đốt</span></td>
+        <td><ul><li><i class="fa-solid fa-plus"></i>Rẻ, dễ sử dụng</li><li><i class="fa-solid fa-plus"></i>Ánh sáng liên tục, bật sáng tức thì</li><li><i class="fa-solid fa-plus"></i>Hoàn màu trung thực</li></ul></td>
+        <td><ul><li><i class="fa-solid fa-xmark"></i>Tốn điện, tỏa nhiều nhiệt</li><li><i class="fa-solid fa-xmark"></i>Tuổi thọ ngắn (~1.000 giờ)</li><li><i class="fa-solid fa-xmark"></i>Hiệu suất cực thấp</li></ul></td>
+      </tr>
+      <tr class="anim" style="--d:2">
+        <td><span class="td-name"><i class="fa-solid fa-bolt"></i>Huỳnh quang</span></td>
+        <td><ul><li><i class="fa-solid fa-plus"></i>Hiệu suất cao hơn sợi đốt</li><li><i class="fa-solid fa-plus"></i>Ánh sáng trải đều</li><li><i class="fa-solid fa-plus"></i>Tuổi thọ gấp 8–10 lần</li></ul></td>
+        <td><ul><li><i class="fa-solid fa-xmark"></i>Chứa thủy ngân — độc hại khi vỡ</li><li><i class="fa-solid fa-xmark"></i>Có thể nhấp nháy, gây mỏi mắt</li><li><i class="fa-solid fa-xmark"></i>Cần ballast, chậm khởi động</li></ul></td>
+      </tr>
+      <tr class="anim row-led" style="--d:3">
+        <td><span class="td-name gold"><i class="fa-solid fa-microchip"></i>LED</span></td>
+        <td><ul><li><i class="fa-solid fa-plus"></i>Tiết kiệm điện vượt trội</li><li><i class="fa-solid fa-plus"></i>Tuổi thọ cao (25.000–50.000 giờ)</li><li><i class="fa-solid fa-plus"></i>Không chứa thủy ngân</li></ul></td>
+        <td><ul><li><i class="fa-solid fa-xmark"></i>Chi phí đầu tư ban đầu cao hơn</li><li><i class="fa-solid fa-xmark"></i>Cần bộ nguồn driver ổn định</li><li><i class="fa-solid fa-xmark"></i>Suy giảm nếu tản nhiệt kém</li></ul></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="lmw">
+    <p class="lmw-label anim" style="--d:4">HIỆU SUẤT PHÁT QUANG <span>(lumen / watt)</span></p>
+    <div class="lmw-row anim" style="--d:5"><span class="lmw-name">Sợi đốt</span><div class="lmw-bar"><i style="--w:7.5%"></i></div><strong class="mono">10–15</strong></div>
+    <div class="lmw-row anim" style="--d:6"><span class="lmw-name">Huỳnh quang</span><div class="lmw-bar"><i style="--w:50%"></i></div><strong class="mono">35–100</strong></div>
+    <div class="lmw-row anim gold" style="--d:7"><span class="lmw-name">LED</span><div class="lmw-bar"><i style="--w:100%"></i></div><strong class="mono">80–200</strong></div>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 10 · ỨNG DỤNG GIA ĐÌNH ─────────── -->
+<section class="slide s-home" data-title="Ứng dụng · Gia đình">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 04 · ỨNG DỤNG THỰC TIỄN</p>
+    <h2 class="slide-title">ỨNG DỤNG — GIA ĐÌNH &amp; DÂN DỤNG</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="home-body">
+    <figure class="ph ph-hero anim" style="--d:1" data-img="home" data-alt="Ảnh căn phòng hiện đại với hệ thống chiếu sáng LED">
+      <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide10-home.jpg</small></span>
+    </figure>
+    <ul class="home-list">
+      <li class="anim" style="--d:2"><i class="fa-solid fa-couch"></i>Chiếu sáng phòng khách</li>
+      <li class="anim" style="--d:3"><i class="fa-solid fa-book-open"></i>Đèn học bảo vệ mắt</li>
+      <li class="anim" style="--d:3"><i class="fa-solid fa-briefcase"></i>Văn phòng</li>
+      <li class="anim" style="--d:4"><i class="fa-solid fa-store"></i>Cửa hàng, siêu thị</li>
+      <li class="anim" style="--d:4"><i class="fa-solid fa-palette"></i>Trang trí nội thất</li>
+      <li class="anim" style="--d:5"><i class="fa-solid fa-tree"></i>Đèn sân vườn</li>
+      <li class="anim" style="--d:5"><i class="fa-solid fa-grip-lines-vertical"></i>Đèn LED dây</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 11 · ỨNG DỤNG NÔNG NGHIỆP ─────────── -->
+<section class="slide s-agri" data-title="Ứng dụng · Nông nghiệp">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 04 · ỨNG DỤNG THỰC TIỄN</p>
+    <h2 class="slide-title">ỨNG DỤNG — NÔNG NGHIỆP CÔNG NGHỆ CAO</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="agri-body">
+    <div class="agri-left">
+      <ul class="blist">
+        <li class="anim" style="--d:1">LED hỗ trợ quá trình <b>quang hợp</b> của cây trồng.</li>
+        <li class="anim" style="--d:2">Dùng trong <b>nhà kính</b> &amp; hệ thống trồng cây công nghệ cao.</li>
+        <li class="anim" style="--d:3">Bước sóng <b class="c-red">đỏ (~660nm)</b> &amp; <b class="c-blue">xanh (~450nm)</b> hỗ trợ sinh trưởng.</li>
+      </ul>
+      <ol class="steps steps-sm">
+        <li class="anim" style="--d:4"><span class="st-ic"><i class="fa-solid fa-lightbulb"></i></span><span class="st-tx"><strong>ÁNH SÁNG LED</strong></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:5"><span class="st-ic"><i class="fa-solid fa-leaf"></i></span><span class="st-tx"><strong>QUANG HỢP</strong></span></li>
+        <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim hl" style="--d:6"><span class="st-ic gold"><i class="fa-solid fa-seedling"></i></span><span class="st-tx"><strong>SINH TRƯỞNG CÂY</strong></span></li>
+      </ol>
+      <div class="chips anim" style="--d:7"><span>THANH LONG</span><span>DƯA LƯỚI</span><span>RAU SẠCH</span></div>
+    </div>
+    <figure class="ph ph-hero anim" style="--d:2" data-img="agriculture" data-alt="Ảnh giàn đèn LED nông nghiệp công nghệ cao chiếu sáng cây trồng">
+      <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide11-agriculture.jpg</small></span>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 12 · ỨNG DỤNG Y TẾ ─────────── -->
+<section class="slide s-med" data-title="Ứng dụng · Y tế">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 04 · ỨNG DỤNG THỰC TIỄN</p>
+    <h2 class="slide-title">ỨNG DỤNG — Y TẾ</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="med-body">
+    <figure class="ph ph-hero anim" style="--d:1" data-img="medical" data-alt="Ảnh thiết bị y tế công nghệ quang học">
+      <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide12-medical.jpg</small></span>
+    </figure>
+    <ul class="med-list">
+      <li class="anim" style="--d:2"><span class="med-ic"><i class="fa-solid fa-bolt"></i></span><div><strong>Laser trong phẫu thuật</strong><small>dao mổ quang học, cầm máu tức thì</small></div></li>
+      <li class="anim" style="--d:3"><span class="med-ic"><i class="fa-solid fa-eye"></i></span><div><strong>Nội soi</strong><small>nguồn sáng LED lạnh qua bó sợi quang</small></div></li>
+      <li class="anim" style="--d:4"><span class="med-ic"><i class="fa-solid fa-microscope"></i></span><div><strong>Thiết bị quang học</strong><small>kính hiển vi, phân tích quang phổ</small></div></li>
+      <li class="anim" style="--d:5"><span class="med-ic"><i class="fa-solid fa-stethoscope"></i></span><div><strong>Thiết bị đo đạc</strong><small>đo SpO₂, nhịp tim bằng quang học</small></div></li>
+      <li class="anim" style="--d:6"><span class="med-ic"><i class="fa-solid fa-x-ray"></i></span><div><strong>Chẩn đoán hình ảnh</strong><small>chiếu sáng chuẩn xác, thị giác máy tính</small></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 13 · XU HƯỚNG 01 — CHUYỂN DỊCH SANG LED ─────────── -->
+<section class="slide s-shift" data-title="Xu hướng · Chuyển dịch sang LED">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 05 · XU HƯỚNG 01</p>
+    <h2 class="slide-title">CHUYỂN DỊCH TOÀN DIỆN SANG LED</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="shift-body">
+    <div class="shift-left">
+      <ol class="steps">
+        <li class="anim" style="--d:1"><span class="st-ic dim"><i class="fa-solid fa-lightbulb"></i></span><span class="st-tx"><strong>ĐÈN TRUYỀN THỐNG</strong></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim hl" style="--d:2"><span class="st-ic gold"><i class="fa-solid fa-microchip"></i></span><span class="st-tx"><strong>LED</strong><small>chiếu sáng thể rắn</small></span></li>
+        <li class="st-link" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim" style="--d:3"><span class="st-ic"><i class="fa-solid fa-leaf"></i></span><span class="st-tx"><strong>TIẾT KIỆM NĂNG LƯỢNG</strong></span></li>
+        <li class="st-link gold" aria-hidden="true"><i class="loop dot"></i><i class="loop dot d2"></i></li>
+        <li class="anim hl" style="--d:4"><span class="st-ic gold"><i class="fa-solid fa-gauge-high"></i></span><span class="st-tx"><strong>CHIẾU SÁNG HIỆU QUẢ</strong></span></li>
+      </ol>
+      <ul class="blist compact">
+        <li class="anim" style="--d:5">Tiết kiệm năng lượng vượt trội.</li>
+        <li class="anim" style="--d:6">Tuổi thọ cao — giảm nhu cầu thay thế.</li>
+        <li class="anim" style="--d:7">Hướng tới chiếu sáng xanh đô thị.</li>
+      </ul>
+      <p class="shift-note anim" style="--d:8"><i class="fa-solid fa-earth-asia"></i>EU cấm đèn sợi đốt &amp; halogen (2009–2018) · Việt Nam: lộ trình 100% LED chiếu sáng công cộng</p>
+    </div>
+    <figure class="ph ph-hero anim" style="--d:2" data-img="greenCity" data-alt="Ảnh thành phố ban đêm với hệ thống chiếu sáng LED">
+      <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide13-green-city.jpg</small></span>
+    </figure>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 14 · XU HƯỚNG 02 — SMART LIGHTING ─────────── -->
+<section class="slide s-smart" data-title="Xu hướng · Smart Lighting">
+  <div class="slide-head anim" style="--d:0">
+    <p class="kicker">PHẦN 05 · XU HƯỚNG 02</p>
+    <h2 class="slide-title">CHIẾU SÁNG THÔNG MINH</h2>
+    <div class="rule"></div>
+  </div>
+  <div class="smart-body">
+    <div class="smart-diagram anim" style="--d:1">
+      <div class="node"><span class="node-ic"><i class="fa-solid fa-mobile-screen-button"></i></span><span class="node-tx"><strong>ĐIỆN THOẠI</strong><small>ứng dụng điều khiển</small></span></div>
+      <div class="node-link" aria-hidden="true"><i class="loop dotUp"></i><i class="loop dotDown"></i></div>
+      <div class="node"><span class="node-ic"><i class="fa-solid fa-wifi"></i></span><span class="node-tx"><strong>WI-FI · BLUETOOTH · ZIGBEE</strong><small>kết nối không dây</small></span></div>
+      <div class="node-link" aria-hidden="true"><i class="loop dotUp"></i><i class="loop dotDown"></i></div>
+      <div class="node hl"><span class="node-ic gold"><i class="fa-solid fa-lightbulb"></i></span><span class="node-tx"><strong>ĐÈN LED</strong><small>bóng thông minh</small></span></div>
+      <div class="node-link" aria-hidden="true"><i class="loop dotUp"></i><i class="loop dotDown"></i></div>
+      <div class="node"><span class="node-ic"><i class="fa-solid fa-gauge"></i></span><span class="node-tx"><strong>CẢM BIẾN</strong><small>ánh sáng · hiện diện · nhiệt độ</small></span></div>
+    </div>
+    <div class="smart-right">
+      <ul class="feat-grid">
+        <li class="anim" style="--d:2"><i class="fa-solid fa-sun"></i>Điều chỉnh độ sáng</li>
+        <li class="anim" style="--d:3"><i class="fa-solid fa-palette"></i>Thay đổi màu sắc</li>
+        <li class="anim" style="--d:3"><i class="fa-solid fa-clock"></i>Hẹn giờ</li>
+        <li class="anim" style="--d:4"><i class="fa-solid fa-leaf"></i>Cảm biến môi trường</li>
+        <li class="anim" style="--d:4"><i class="fa-solid fa-mobile-screen-button"></i>Điều khiển từ xa</li>
+        <li class="anim" style="--d:5"><i class="fa-solid fa-network-wired"></i>Nhà thông minh · AI · IoT</li>
+      </ul>
+      <figure class="ph ph-wide anim" style="--d:5" data-img="smartLighting" data-alt="Ảnh hệ thống chiếu sáng thông minh">
+        <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide14-smart-lighting.jpg</small></span>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 15 · KẾT LUẬN ─────────── -->
+<section class="slide s-concl" data-title="Kết luận">
+  <div class="concl-body">
+    <div class="concl-left">
+      <p class="kicker anim" style="--d:0">PHẦN 06 · KẾT LUẬN</p>
+      <h2 class="mega anim" style="--d:1">KẾT LUẬN</h2>
+      <ol class="concl-list">
+        <li class="anim" style="--d:2"><span class="mono">01</span><p>Công nghệ điện – quang đóng vai trò <b class="c-cyan">quan trọng</b> trong đời sống hiện đại.</p></li>
+        <li class="anim" style="--d:3"><span class="mono">02</span><p>Sự chuyển dịch sang <b class="c-gold">LED</b> giúp tiết kiệm năng lượng và nâng cao hiệu quả chiếu sáng.</p></li>
+        <li class="anim" style="--d:4"><span class="mono">03</span><p>Tương lai: điện – quang kết hợp <b>AI, IoT và Smart Lighting</b>.</p></li>
+      </ol>
+    </div>
+    <figure class="ph ph-tall anim" style="--d:2" data-img="future" data-alt="Ảnh bóng đèn LED và thành phố hiện đại về đêm">
+      <span class="ph-in"><i class="fa-regular fa-image" aria-hidden="true"></i><span class="ph-title">IMAGE PLACEHOLDER</span><small class="ph-path">assets/images/slide16-future.jpg</small></span>
+    </figure>
+  </div>
+  <div class="concl-strip anim" style="--d:5">
+    TỪ DÒNG ĐIỆN <i class="fa-solid fa-arrow-right"></i> ÁNH SÁNG <i class="fa-solid fa-arrow-right"></i> CÔNG NGHỆ <i class="fa-solid fa-arrow-right"></i> <em class="c-gold">TƯƠNG LAI</em>
+  </div>
+</section>
+
+<!-- ─────────── SLIDE 16 · CẢM ƠN / Q&A ─────────── -->
+<section class="slide s-thanks" data-title="Cảm ơn &amp; Q&amp;A">
+  <div class="bulb-mini anim" style="--d:0">
+    <svg viewBox="0 0 560 140" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="glowCoreB" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+          <stop offset="30%" stop-color="#FFE885" stop-opacity="0.75"/>
+          <stop offset="60%" stop-color="#FFB300" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#FF8F00" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowAuraB" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFAE19" stop-opacity="0.3"/>
+          <stop offset="65%" stop-color="#FF7700" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#FF7700" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="screwMetalB" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#41566E"/>
+          <stop offset="30%" stop-color="#8FA8C4"/>
+          <stop offset="50%" stop-color="#B8D0E8"/>
+          <stop offset="70%" stop-color="#6B829C"/>
+          <stop offset="100%" stop-color="#2D3E52"/>
+        </linearGradient>
+        <linearGradient id="glassGradB" x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+          <stop offset="40%" stop-color="#64B5F6" stop-opacity="0.04"/>
+          <stop offset="80%" stop-color="#0D47A1" stop-opacity="0.12"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Dây dẫn điện -->
+      <path class="wire" d="M0 112 H272"/><path class="wire" d="M288 112 H560"/>
+      <circle class="loop spark s1" cx="10" cy="112" r="3.5"/><circle class="loop spark s2" cx="10" cy="112" r="3.5"/>
+      <circle class="loop spark sR s1" cx="550" cy="112" r="3.5"/><circle class="loop spark sR s2" cx="550" cy="112" r="3.5"/>
+
+      <!-- Hào quang ấm áp -->
+      <circle class="loop glow" cx="280" cy="46" r="62" fill="url(#glowAuraB)"/>
+      <circle class="loop glow" cx="280" cy="46" r="38" fill="url(#glowCoreB)"/>
+
+      <!-- Tia sáng 2D -->
+      <g class="rays" stroke="#FFC95C" stroke-width="2" stroke-linecap="round">
+        <line class="loop ray" x1="280" y1="2" x2="280" y2="12" transform="rotate(-50 280 46)"/>
+        <line class="loop ray" x1="280" y1="0" x2="280" y2="14" transform="rotate(0 280 46)"/>
+        <line class="loop ray" x1="280" y1="2" x2="280" y2="12" transform="rotate(50 280 46)"/>
+      </g>
+
+      <!-- Vỏ bóng thủy tinh dáng quả lê -->
+      <path d="M 268 84 C 265 72, 256 56, 256 44 A 24 24 0 1 1 304 44 C 304 56, 295 72, 292 84 Z"
+            fill="url(#glassGradB)"
+            stroke="rgba(190, 228, 255, 0.45)"
+            stroke-width="2"
+            stroke-linejoin="round"/>
+
+      <!-- Ánh phản quang specular -->
+      <path d="M 264 32 A 20 20 0 0 1 283 22" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+
+      <!-- Trụ đỡ và dây tóc Vonfram -->
+      <path d="M 274 84 L 276 66 Q 280 65 284 66 L 286 84 Z" fill="rgba(120,180,240,0.12)" stroke="rgba(180,220,255,0.3)" stroke-width="1"/>
+      <path d="M 277 66 L 277 48" stroke="#B0CCE8" stroke-width="1.2"/>
+      <path d="M 283 66 L 283 48" stroke="#B0CCE8" stroke-width="1.2"/>
+      <path class="fil" d="M 277 48 Q 278 42 279 40 Q 280 39 280 34 Q 280 39 281 40 Q 282 42 283 48"
+            fill="none" stroke="#FFF8E0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="280" cy="42" r="3" fill="#FFFFFF" opacity="0.95" filter="drop-shadow(0 0 4px #FFAA00)"/>
+
+      <!-- Đui xoáy E27 mini -->
+      <rect x="269" y="84" width="22" height="4.5" rx="2" fill="url(#screwMetalB)" stroke="rgba(180,210,240,0.3)" stroke-width="0.8"/>
+      <rect x="270" y="89" width="20" height="4.5" rx="2" fill="url(#screwMetalB)" stroke="rgba(180,210,240,0.3)" stroke-width="0.8"/>
+      <rect x="271" y="94" width="18" height="4.5" rx="2" fill="url(#screwMetalB)" stroke="rgba(180,210,240,0.3)" stroke-width="0.8"/>
+      <path d="M 272 99 Q 280 102 288 99 L 287 103 Q 280 106 273 103 Z" fill="#0C1724"/>
+      <path d="M 275 103 Q 280 113 285 103 Z" fill="#FFC95C" stroke="#FFE29E" stroke-width="1"/>
+    </svg>
+  </div>
+  <h2 class="thanks-title anim" style="--d:1">CẢM ƠN THẦY/CÔ VÀ CÁC BẠN<br>ĐÃ LẮNG NGHE</h2>
+  <p class="qa anim" style="--d:2">Q<span class="amp">&amp;</span>A</p>
+  <div class="thanks-meta anim" style="--d:3"><span class="loop brand-dot"></span>NHÓM 3 · BÀI THUYẾT TRÌNH CÔNG NGHỆ ĐIỆN – QUANG</div>
+</section>
+
+</main>
+<script src="script.js"></script>
+</body>
+</html>

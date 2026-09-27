@@ -1,0 +1,19 @@
+# Video & media dung lượng lớn
+assets/videos/
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.wmv
+
+# Tệp nén & lưu trữ lớn
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Thư mục hệ thống & IDE
+.DS_Store
+Thumbs.db
+node_modules/
+.vscode/
