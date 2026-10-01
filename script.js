@@ -24,7 +24,7 @@
         future: "assets/images/slide16-future.jpg"
     };
 
-    const YT_ID = 'GnAk91vzr9g'; // Video mô phỏng (chỉ embed, không tải về)
+    const YT_ID = 'qN_EDWN0fRM'; // Video mô phỏng (chỉ embed, không tải về)
 
     /* ═══ 2. THAM CHIẾU DOM ═══ */
     const $ = (s) => document.querySelector(s);
